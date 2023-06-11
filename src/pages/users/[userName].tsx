@@ -3,6 +3,8 @@ import Header from "../../components/Header";
 import { useRouter } from "next/router";
 import useUser from "../../hooks/useUser";
 import { ClipLoader } from "react-spinners";
+import UserHero from "../../components/users/UserHero";
+import UserBio from "../../components/users/UserBio";
 
 const UserProfile: FC = () => {
   const router = useRouter();
@@ -20,6 +22,8 @@ const UserProfile: FC = () => {
   return (
     <>
       <Header label={user.user.name} showBackArrow={true} />
+      <UserHero userName={userName as string} />
+      <UserBio userName={userName as string} />
     </>
   );
 };

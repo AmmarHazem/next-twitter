@@ -8,6 +8,7 @@ export interface UserModel {
   coverImage?: string;
   profileImage?: string;
   hashedPassword?: string;
+  bio?: string;
   createdAt: Date;
   updatedAt: Date;
   followingIDs: string[];
