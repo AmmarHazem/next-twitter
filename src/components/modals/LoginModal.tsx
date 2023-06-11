@@ -3,6 +3,8 @@ import useLoginModal from "../../hooks/useLoginModal";
 import TInput from "../TInput";
 import TModal from "../TModal";
 import useRegisterModal from "../../hooks/useRegister";
+import { signIn } from "next-auth/react";
+import { toast } from "react-hot-toast";
 
 const LoginModal: FC = () => {
   const loginModal = useLoginModal();
@@ -11,17 +13,24 @@ const LoginModal: FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     try {
       setLoading(true);
-      // TODO: Implement login
-      loginModal.onClose();
+      await signIn("credentials", { email: email, password: password });
+      // console.log("--- login res", res);
+      // if (res?.ok) {
+      //   loginModal.onClose();
+      //   toast.success("Login success");
+      // } else {
+      //   throw new Error("Invalid credentials");
+      // }
     } catch (error) {
       console.log("--- loing onSubmit error", error);
+      toast.error("Invalid credentails");
     } finally {
       setLoading(false);
     }
-  }, [loginModal]);
+  }, [email, password]);
 
   const onToggle = useCallback(() => {
     if (loading) return;
@@ -41,6 +50,7 @@ const LoginModal: FC = () => {
       />
       <TInput
         placeholder="Password"
+        type="password"
         value={password}
         disabled={loading}
         onChange={function (e: ChangeEvent<HTMLInputElement>): void {

@@ -3,6 +3,10 @@ import TInput from "../TInput";
 import TModal from "../TModal";
 import useRegisterModal from "../../hooks/useRegister";
 import useLoginModal from "../../hooks/useLoginModal";
+import axios from "axios";
+import { signIn } from "next-auth/react";
+import { UserModel } from "../../models";
+import toast from "react-hot-toast";
 
 const RegisterModal: FC = () => {
   const registerModal = useRegisterModal();
@@ -13,17 +17,30 @@ const RegisterModal: FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = useCallback(() => {
+  const onSubmit = useCallback(async () => {
     try {
       setLoading(true);
-      // TODO: Implement register
-      registerModal.onClose();
+      const res = await axios.post<UserModel>("/api/register", {
+        email: email,
+        username: userName,
+        name: name,
+        password: password,
+      });
+      const newUser = res.data;
+      if (newUser) {
+        toast.success("Account created");
+        signIn("credentials", { email, password });
+        registerModal.onClose();
+      } else {
+        throw new Error("Something went wrong");
+      }
     } catch (error) {
       console.log("--- loing onSubmit error", error);
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
-  }, [registerModal]);
+  }, [email, name, password, registerModal, userName]);
 
   const onToggle = useCallback(() => {
     if (loading) return;

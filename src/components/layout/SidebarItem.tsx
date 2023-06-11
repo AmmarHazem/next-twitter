@@ -1,9 +1,24 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { SideBarItemType } from "./Sidebar";
+import { useRouter } from "next/router";
+import useCurrentUser from "../../hooks/useCurrentUser";
+import useLoginModal from "../../hooks/useLoginModal";
 
-const SidebarItem: FC<SidebarItemProps> = ({ item }) => {
+const SidebarItem: FC<SidebarItemProps> = ({ item, isAuth, onClick }) => {
+  const router = useRouter();
+  const loginModal = useLoginModal();
+  const { data: currentUser } = useCurrentUser();
+
+  const handleClick = useCallback(() => {
+    if (onClick) return onClick();
+    if (isAuth && !currentUser) {
+      return loginModal.onOpen();
+    }
+    router.push(item.href);
+  }, [currentUser, isAuth, item.href, loginModal, onClick, router]);
+
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex flex-row items-center" onClick={handleClick}>
       <div className="relative rounded-full h-14 w-14 flex items-center justify-center p-4 hover:bg-slate-300 hover:bg-opacity-10 cursor-pointer lg:hidden">
         {item.icon}
       </div>
@@ -17,6 +32,7 @@ const SidebarItem: FC<SidebarItemProps> = ({ item }) => {
 
 interface SidebarItemProps {
   item: SideBarItemType;
+  isAuth?: boolean;
   onClick?: () => void;
 }
 
