@@ -26,12 +26,12 @@ const Sidebar: FC = () => {
       },
       {
         label: "Profile",
-        href: "/user/123",
+        href: `/users/${currentUser?.userName}`,
         isAuth: true,
         icon: <FaUser size={28} color="white" />,
       },
     ],
-    []
+    [currentUser?.userName]
   );
 
   return (

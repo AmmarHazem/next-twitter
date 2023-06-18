@@ -1,6 +1,6 @@
 import { FC, useCallback } from "react";
-import useUser from "../hooks/useUser";
 import { useRouter } from "next/router";
+import useUser from "../hooks/useUser";
 import Image from "next/image";
 
 const Avatar: FC<AvatarProps> = ({ userName, hasBorder, isLarge }) => {

@@ -5,7 +5,11 @@ import type { AppProps } from "next/app";
 import LoginModal from "../components/modals/LoginModal";
 import RegisterModal from "../components/modals/RegisterModal";
 import EditModal from "../components/modals/EditModal";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import "../styles/globals.css";
+
+dayjs.extend(relativeTime);
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
