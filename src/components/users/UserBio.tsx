@@ -5,12 +5,15 @@ import dayjs from "dayjs";
 import TButton from "../TButton";
 import { BiCalendar } from "react-icons/bi";
 import useEditModal from "../../hooks/useEditModal";
+import useFollow from "../../hooks/useFollow";
 
 const UserBio: FC<UserBioProps> = ({ userName }) => {
   const editModal = useEditModal();
   const { data: currentUserData } = useCurrentUser();
   const { data: userData } = useUser({ userName: userName });
   const user = userData?.user;
+
+  const { isFollowing, toggleFollow } = useFollow(userName);
 
   const createdAt = useMemo(() => {
     if (!user?.createdAt) return null;
@@ -29,7 +32,12 @@ const UserBio: FC<UserBioProps> = ({ userName }) => {
             }}
           />
         ) : (
-          <TButton secondary={true} label="Follow" onClick={() => {}} />
+          <TButton
+            secondary={!isFollowing}
+            outline={isFollowing}
+            label={isFollowing ? "Unfollow" : "Follow"}
+            onClick={toggleFollow}
+          />
         )}
       </div>
       <div className="mt-8 px-4">

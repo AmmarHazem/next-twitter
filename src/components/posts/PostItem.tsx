@@ -1,16 +1,18 @@
 import { FC, useCallback, useMemo } from "react";
 import { PostModel } from "../../models";
 import { useRouter } from "next/router";
+import { AiOutlineHeart, AiOutlineMessage, AiFillHeart } from "react-icons/ai";
 import useCurrentUser from "../../hooks/useCurrentUser";
 import useLoginModal from "../../hooks/useLoginModal";
 import dayjs from "dayjs";
 import Avatar from "../Avatar";
-import { AiOutlineHeart, AiOutlineMessage } from "react-icons/ai";
+import useLike from "../../hooks/useLike";
 
 const PostItem: FC<PostItemProps> = ({ userID, post }) => {
   const router = useRouter();
   const loginModal = useLoginModal();
   const { data: currentUser } = useCurrentUser();
+  const { hasLiked, toggleLike } = useLike({ postID: post.id ?? "", userID: userID ?? post.userID ?? "" });
 
   const goToUser = useCallback(
     (e: any) => {
@@ -27,9 +29,12 @@ const PostItem: FC<PostItemProps> = ({ userID, post }) => {
   const onLike = useCallback(
     (e: any) => {
       e.stopPropagation();
-      loginModal.onOpen();
+      if (!currentUser) {
+        return loginModal.onOpen();
+      }
+      toggleLike();
     },
-    [loginModal]
+    [currentUser, loginModal, toggleLike]
   );
 
   const createdAt = useMemo<string | null>(() => {
@@ -61,7 +66,11 @@ const PostItem: FC<PostItemProps> = ({ userID, post }) => {
               onClick={onLike}
               className="flex flex-row items-center text-neutral-500 gap-2 cursor-pointer transition hover:text-red-500"
             >
-              <AiOutlineHeart size={20} />
+              {hasLiked ? (
+                <AiFillHeart size={20} color={hasLiked ? "red" : ""} />
+              ) : (
+                <AiOutlineHeart size={20} color={hasLiked ? "red" : ""} />
+              )}
               <p>{post.likedIDs?.length ?? 0}</p>
             </div>
           </div>

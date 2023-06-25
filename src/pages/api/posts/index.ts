@@ -27,7 +27,7 @@ async function createPost(req: NextApiRequest, res: NextApiResponse) {
   return res.status(200).json(post);
 }
 
-async function getPosts(req: NextApiRequest, res: NextApiResponse) {
+export async function getPosts(req: NextApiRequest, res: NextApiResponse) {
   const posts = await Prisma.post.findMany({ include: { user: true, comments: true }, orderBy: { createdAt: "desc" } });
   return res.status(200).json(posts);
 }
