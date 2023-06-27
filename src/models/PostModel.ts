@@ -11,6 +11,11 @@ export interface PostModel {
   comments?: PostCommentModel[];
 }
 
-interface PostCommentModel {
-  text?: string;
+export interface PostCommentModel {
+  id?: string;
+  body?: string;
+  userID?: string;
+  postID?: string;
+  createdAt?: string;
+  user?: UserModel;
 }

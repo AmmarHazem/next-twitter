@@ -3,8 +3,8 @@ import { useRouter } from "next/router";
 import useUser from "../hooks/useUser";
 import Image from "next/image";
 
-const Avatar: FC<AvatarProps> = ({ userName, hasBorder, isLarge }) => {
-  const { data: user } = useUser({ userName: userName });
+const Avatar: FC<AvatarProps> = ({ userID, userName, hasBorder, isLarge }) => {
+  const { data: user } = useUser({ userName: userName, userID: userID });
   const router = useRouter();
 
   const onClick = useCallback(
@@ -38,7 +38,8 @@ const Avatar: FC<AvatarProps> = ({ userName, hasBorder, isLarge }) => {
 };
 
 interface AvatarProps {
-  userName: string;
+  userName?: string;
+  userID?: string;
   isLarge?: boolean;
   hasBorder?: boolean;
 }

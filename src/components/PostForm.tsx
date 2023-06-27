@@ -8,23 +8,28 @@ import axios from "axios";
 import { PostModel } from "../models";
 import TButton from "./TButton";
 import Avatar from "./Avatar";
+import usePost from "../hooks/usePost";
 
 const PostForm: FC<PostFormProps> = ({ isComment, placeholder, postID }) => {
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, mutate: mutateCurrentUser } = useCurrentUser();
   const { mutate: mutatePosts } = usePosts();
+  const { mutate: mutatePost } = usePost(postID);
   const [body, setBody] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
   const onSubmit = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.post<PostModel>("/api/posts", { body });
+      const url = isComment ? `/api/comments?postID=${encodeURIComponent(postID ?? "")}` : "/api/posts";
+      const res = await axios.post<PostModel>(url, { body });
       if (res.data.id) {
         toast.success("Post created successfully");
         setBody("");
         mutatePosts();
+        mutatePost();
+        mutateCurrentUser();
       } else {
         console.log("--- create post onSubmit response error");
         throw new Error("Something went wrong");
@@ -35,7 +40,7 @@ const PostForm: FC<PostFormProps> = ({ isComment, placeholder, postID }) => {
     } finally {
       setLoading(false);
     }
-  }, [body, mutatePosts]);
+  }, [body, isComment, mutateCurrentUser, mutatePost, mutatePosts, postID]);
 
   return (
     <div className="border-b-[1px] border-neutral-800 px-5 py-2">

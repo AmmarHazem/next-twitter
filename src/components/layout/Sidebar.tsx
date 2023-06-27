@@ -22,6 +22,7 @@ const Sidebar: FC = () => {
         label: "Notifications",
         href: "/notifications",
         isAuth: true,
+        alert: currentUser?.hasNotification,
         icon: <BsBellFill size={28} color="white" />,
       },
       {
@@ -31,7 +32,7 @@ const Sidebar: FC = () => {
         icon: <FaUser size={28} color="white" />,
       },
     ],
-    [currentUser?.userName]
+    [currentUser?.hasNotification, currentUser?.userName]
   );
 
   return (
@@ -40,7 +41,7 @@ const Sidebar: FC = () => {
         <div className="space-y-2 lg:w-[230px]">
           <SidebarLogo />
           {items.map((item) => {
-            return <SidebarItem key={item.href} item={item} isAuth={item.isAuth} />;
+            return <SidebarItem key={item.href} item={item} isAuth={item.isAuth} alert={item.alert} />;
           })}
           {currentUser && (
             <SidebarItem
@@ -66,6 +67,7 @@ export type SideBarItemType = {
   label: string;
   href: string;
   isAuth?: boolean;
+  alert?: boolean;
   icon: React.ReactNode;
 };
 
